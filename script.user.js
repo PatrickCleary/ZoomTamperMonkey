@@ -7,10 +7,12 @@
 // @match        https://zoom.us/join
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js
 // @require      ./Calendar-master/calendar.js
+// @require      ./meetingSchedulingFunctions.js
 // @resource     calendarCSS ./Calendar-master/calendar.css
 // @resource     mainsiteCSS ./mainsite.css
 // @grant        GM_setValue    
 // @grant        GM_getValue
+// @grant        GM_deleteValue
 // @grant        GM_getResourceText
 // @grant        GM_addStyle
 
@@ -23,7 +25,9 @@
     window.jQuery310 = $.noConflict(true);
     
     window.addEventListener('load', () => {
+
         addMeetingDivs()
+        addSchedule()
         createCalendar()
         addCalendar()
         var cssTxt  = GM_getResourceText("calendarCSS");
@@ -32,8 +36,9 @@
         GM_addStyle (cssTxt2);
 
 
+    let meetingsArray = GM_getValue("meetings")
+ 
 
-    let meetingsArray = GM_getValue("meetings");
     if(meetingsArray == undefined) {
         meetingsArray = []
         GM_setValue("meetings", meetingsArray)
@@ -158,26 +163,39 @@
 
     function addInput() {
 
+
         let meetingDiv = document.getElementById("add-meeting");
+
+        let addMeetingTitle = document.createElement('h1')
+        addMeetingTitle.innerHTML = 'Add Meeting'
+
+        
 
         let submit = document.createElement('button')
         submit.innerHTML = "submit"
+        submit.className = "btn btn-primary"
         submit.setAttribute("type", "text")
-        submit.setAttribute("placeholder","Meeting Name")
-        submit.onclick = ()=>addMeeting()
-        meetingDiv.appendChild(submit)
+        submit.onclick = ()=>addMeetingButton()
 
         let input = document.createElement('input')
         input.setAttribute("type", "text")
         input.setAttribute("id", "meeting-name")
         input.setAttribute("placeholder", "Meeting Name")
-        meetingDiv.appendChild(input)
+        input.className = 'input-sm form-control'
 
         let idInput = document.createElement('input')
         idInput.setAttribute("type", "text")
         idInput.setAttribute("id", "meeting-id")
         idInput.setAttribute("placeholder", "Meeting ID")
-        meetingDiv.appendChild(idInput)
+        idInput.className = 'input-sm form-control'
+
+
+        let timeInput = document.createElement('input')
+        timeInput.type = 'time'
+        timeInput.id = 'meeting-time'
+        timeInput.className = 'input-sm form-control'
+
+
 
         let repeatLabel = document.createElement('label')
         repeatLabel.setAttribute('for', 'repeat-options')
@@ -186,6 +204,23 @@
         let repeatSelection = document.createElement('select');
         let repeatOptions = ['Every Day','Every Weekday', 'Every Week', 'Every Month']
         repeatSelection.id = 'repeat-options'
+        repeatSelection.className = "form-control"
+        
+        let meetingDatePicker = document.createElement('input')
+        meetingDatePicker.type = 'date'
+        meetingDatePicker.id = 'meetingDatePicker'
+        meetingDatePicker.className = 'form-control'
+        
+        //TODO: new DAate().toString() not working?
+        meetingDatePicker.value = new Date().toString()
+        meetingDatePicker.min = new Date().toString();
+        meetingDatePicker.max = "2050-12-31"
+
+        let defaultRepeatOption = document.createElement('option')
+        defaultRepeatOption.innerHTML = 'Repeat Meeting Every...'
+        defaultRepeatOption.disabled = true
+        defaultRepeatOption.selected = true
+        repeatSelection.appendChild(defaultRepeatOption)
 
         for(let i = 0 ; i < repeatOptions.length; i++) { 
             let repeatOption = document.createElement('option')
@@ -196,28 +231,37 @@
             repeatSelection.appendChild(repeatOption)
         }
 
+        meetingDiv.appendChild(addMeetingTitle)
+        meetingDiv.appendChild(input)
+        meetingDiv.appendChild(idInput)
+        meetingDiv.appendChild(timeInput)
+        meetingDiv.appendChild(meetingDatePicker)
         meetingDiv.appendChild(repeatSelection)
+        meetingDiv.appendChild(submit)
+        
 
 }
 
     function addButton(text, onclick, cssObj) {
         cssObj = null
         let button = document.createElement('button'), btnStyle = button.style
-
+        button.className = "btn"
         button.innerHTML = text
         button.onclick = onclick
 
         let meetings = document.getElementById("meetings").appendChild(button)
     }
 
-    function addMeeting() {
-        let name = document.getElementById("meeting-name").value
-        let id = document.getElementById("meeting-id").value
-        let meetingArray = GM_getValue("meetings")
-        meetingArray.push([name, id])
-        GM_setValue("meetings", meetingArray)
-        addButton(name, ()=>joinMeeting(id))
+    function addMeetingButton() {
+        let meetingName = document.getElementById("meeting-name").value
+        let meetingId = document.getElementById("meeting-id").value
+        let meetingTime = document.getElementById('meeting-time').value
+        let meetingDate = new Date(document.getElementById('meetingDatePicker').value).toLocaleDateString()
+        let meetingRepeat = document.getElementById('repeat-options').value
 
+        let newMeeting = new Meeting(meetingName, meetingId, meetingTime, meetingDate, meetingRepeat)
+
+        addMeeting(newMeeting)
 
     }
     function deleteAllMeetings() {
@@ -226,6 +270,49 @@
 
 
     
+    //Daily Schedule!!!
+
+
+    function addSchedule() {
+
+        let calendarDiv = document.getElementById('calendarDiv')
+        let scheduleDiv = document.createElement('div')
+        
+        let schedulerTitle = document.createElement('h1')
+        schedulerTitle.innerHTML = 'Today\'s Meetings:'
+
+        scheduleDiv.appendChild(schedulerTitle)
+
+        let meetingsList = document.createElement('ul')
+        meetingsList.id = 'meetings-list'
+
+
+        //TODO: change this to be the currently selected date!!!
+        let todaysMeetings = getTodaysMeetings(new Date())
+
+        for( let i =0; i < todaysMeetings.length; i ++) {
+
+            let newMeeting = document.createElement('li')
+            newMeeting.innerHTML = todaysMeetings[i].name + ' - ' + todaysMeetings[i].time
+            
+            let button = document.createElement('button')
+            button.className = "btn"
+            button.innerHTML = 'Join Meeting'
+            button.onclick = ()=>joinMeeting(todaysMeetings[i].id)
+
+            newMeeting.appendChild(button)
+
+            scheduleDiv.appendChild(newMeeting);
+        }
+
+        calendarDiv.appendChild(scheduleDiv)
+
+    }
+
+
+
+
+
 
     // Your code here...
 })();

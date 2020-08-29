@@ -12,6 +12,14 @@
 }
 
 .mini-layout-body {
-
     flex: 1;
+}
+
+#add-meeting {
+    flex: 1;
+
+}
+
+#join-conf h1 {
+    margin: 5%;
 }
