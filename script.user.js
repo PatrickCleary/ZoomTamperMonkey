@@ -190,10 +190,6 @@
         idInput.className = 'input-sm form-control'
 
 
-        let timeInput = document.createElement('input')
-        timeInput.type = 'time'
-        timeInput.id = 'meeting-time'
-        timeInput.className = 'input-sm form-control'
 
 
 
@@ -207,7 +203,7 @@
         repeatSelection.className = "form-control"
         
         let meetingDatePicker = document.createElement('input')
-        meetingDatePicker.type = 'date'
+        meetingDatePicker.type = 'datetime-local'
         meetingDatePicker.id = 'meetingDatePicker'
         meetingDatePicker.className = 'form-control'
         
@@ -234,7 +230,6 @@
         meetingDiv.appendChild(addMeetingTitle)
         meetingDiv.appendChild(input)
         meetingDiv.appendChild(idInput)
-        meetingDiv.appendChild(timeInput)
         meetingDiv.appendChild(meetingDatePicker)
         meetingDiv.appendChild(repeatSelection)
         meetingDiv.appendChild(submit)
@@ -249,19 +244,19 @@
         button.innerHTML = text
         button.onclick = onclick
 
-        let meetings = document.getElementById("meetings").appendChild(button)
+        document.getElementById("meetings").appendChild(button)
     }
 
     function addMeetingButton() {
         let meetingName = document.getElementById("meeting-name").value
         let meetingId = document.getElementById("meeting-id").value
-        let meetingTime = document.getElementById('meeting-time').value
-        let meetingDate = new Date(document.getElementById('meetingDatePicker').value).toLocaleDateString()
+        let meetingDateTime = document.getElementById('meetingDatePicker').value
         let meetingRepeat = document.getElementById('repeat-options').value
 
-        let newMeeting = new Meeting(meetingName, meetingId, meetingTime, meetingDate, meetingRepeat)
+        let newMeeting = new Meeting(meetingName, meetingId, new Date(meetingDateTime), meetingRepeat)
 
         addMeeting(newMeeting)
+        addSchedule()
 
     }
     function deleteAllMeetings() {
@@ -308,6 +303,8 @@
         calendarDiv.appendChild(scheduleDiv)
 
     }
+
+    function refreshSchedule(date) {}
 
 
 

@@ -1,8 +1,7 @@
 class Meeting {
-    constructor(meetingName, meetingId,meetingTime, meetingDate,meetingRepeat) {
+    constructor(meetingName, meetingId, meetingDate,meetingRepeat) {
         this.name = meetingName
         this.id = meetingId
-        this.time = meetingTime
         this.date = meetingDate
         this.repeat =  meetingRepeat
     }
