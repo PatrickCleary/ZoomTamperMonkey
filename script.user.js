@@ -29,7 +29,7 @@
         addMeetingDivs()
         addSchedule()
         createCalendar()
-        addCalendar()
+        addCalendar(refreshSchedule)
         var cssTxt  = GM_getResourceText("calendarCSS");
         var cssTxt2  = GM_getResourceText("mainsiteCSS");
         GM_addStyle (cssTxt);
@@ -198,7 +198,7 @@
         repeatLabel.innerHTML = 'Repeat Meeting Every...'
 
         let repeatSelection = document.createElement('select');
-        let repeatOptions = ['Every Day','Every Weekday', 'Every Week', 'Every Month']
+        let repeatOptions = ['One Time Only', 'Every Day','Every Weekday', 'Every Week']
         repeatSelection.id = 'repeat-options'
         repeatSelection.className = "form-control"
         
@@ -256,7 +256,7 @@
         let newMeeting = new Meeting(meetingName, meetingId, new Date(meetingDateTime), meetingRepeat)
 
         addMeeting(newMeeting)
-        addSchedule()
+        refreshSchedule(new Date())    
 
     }
     function deleteAllMeetings() {
@@ -272,18 +272,41 @@
 
         let calendarDiv = document.getElementById('calendarDiv')
         let scheduleDiv = document.createElement('div')
+        scheduleDiv.id = 'schedule-div'
         
         let schedulerTitle = document.createElement('h1')
+        schedulerTitle.id = 'scheduler-title'
         schedulerTitle.innerHTML = 'Today\'s Meetings:'
 
         scheduleDiv.appendChild(schedulerTitle)
 
-        let meetingsList = document.createElement('ul')
+        calendarDiv.appendChild(scheduleDiv)
+
+        refreshSchedule(new Date())
+
+
+    }
+
+    function toStringCustom(date) {
+        let days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+        return days[date.getDay()] + ' ' + months[date.getMonth()] + ' '  + date.getDate() + ' ' + (1900+date.getYear())
+    }
+
+    function refreshSchedule(date) {
+        let schedulerTitle = document.getElementById('scheduler-title')
+        schedulerTitle.innerHTML = toStringCustom(date)
+        let meetingsList = document.getElementById('meetings-list')
+        let scheduleDiv = document.getElementById('schedule-div')
+        if(meetingsList) {
+            scheduleDiv.removeChild(meetingsList)
+        }
+        
+        meetingsList = document.createElement('ul')
         meetingsList.id = 'meetings-list'
-
-
+        
         //TODO: change this to be the currently selected date!!!
-        let todaysMeetings = getTodaysMeetings(new Date())
+        let todaysMeetings = getTodaysMeetings(date)
 
         for( let i =0; i < todaysMeetings.length; i ++) {
 
@@ -297,17 +320,11 @@
 
             newMeeting.appendChild(button)
 
-            scheduleDiv.appendChild(newMeeting);
+            meetingsList.appendChild(newMeeting);
         }
-
-        calendarDiv.appendChild(scheduleDiv)
-
+        scheduleDiv.appendChild(meetingsList)
+        
     }
-
-    function refreshSchedule(date) {}
-
-
-
 
 
 

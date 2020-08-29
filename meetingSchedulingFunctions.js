@@ -18,26 +18,38 @@ class Meeting {
             }
             GM_setValueAndConvertToString("weeklyMeetingsMap", weeklyMeetingsMap)
         }
-        console.log('getmEETINGSs' +  date)
-        console.log('getmEETINGSs' +  date.getDay())
         return GM_getValueAndConvertToMap('weeklyMeetingsMap').get(date.getDay())
     }
 
 
     function addMeeting(meeting) {
 
-        
+        console.log(meeting.repeat)
+        //do not repeat
+        if(meeting.repeat ==0 || meeting.repeat == 'Repeat Meeting Every...') {
 
-        if(meeting.repeat == 2){
+        }
+
+        //repeat every day
+        else if(meeting.repeat == 1) {
+
+        }
+
+        //repeat every weekday
+        else if(meeting.repeat ==2) {
+
+        }
+
+        //repeat 1x a week
+        else if(meeting.repeat == 3){
             let weeklyMeetingsMap = GM_getValueAndConvertToMap('weeklyMeetingsMap') 
             let dayOfTheWeek = meeting.date.getDay()
-            console.log('add meeting date ' + meeting.date)
-            console.log('add meeting day ' + meeting.date.getDay())
             let meetingsForThatDay = weeklyMeetingsMap.get(dayOfTheWeek)
             meetingsForThatDay.push(meeting)
             weeklyMeetingsMap.set(dayOfTheWeek, meetingsForThatDay)
             GM_setValueAndConvertToString('weeklyMeetingsMap', weeklyMeetingsMap)
         }
+        
     }
 
 

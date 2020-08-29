@@ -1,4 +1,4 @@
-function addCalendar() {
+function addCalendar(refreshSchedule) {
 
 function generate_year_range(start, end) {
   var years = "";
@@ -68,7 +68,6 @@ document.getElementById('year').onchange = ()=>jump()
 
 function showCalendar(month, year) {
 
-  console.log(month, year)
   var firstDay = ( new Date( year, month ) ).getDay();
 
   tbl = document.getElementById("calendar-body");
@@ -102,7 +101,7 @@ function showCalendar(month, year) {
               cell.setAttribute("data-month_name", months[month]);
               cell.className = "date-picker";
               cell.innerHTML = "<span>" + date + "</span>";
-
+              cell.onclick = refreshScheduleFromCalendar(date, month, year, cell)
               if ( date === today.getDate() && year === today.getFullYear() && month === today.getMonth() ) {
                   cell.className = "date-picker selected";
               }
@@ -116,6 +115,19 @@ function showCalendar(month, year) {
       tbl.appendChild(row);
   }
 
+}
+
+function refreshScheduleFromCalendar(date, month, year,cell) {
+  
+  let refreshDate = new Date(year+'-'+((month+1)%12)+'-'+date)
+
+  return ()=>{
+    refreshSchedule(refreshDate); 
+    let selectedDate = document.getElementsByClassName('selected')
+    if(selectedDate[0]){
+    selectedDate[0].className = 'date-picker'
+    }
+    cell.className = 'date-picker selected'}
 }
 
 function daysInMonth(iMonth, iYear) {
