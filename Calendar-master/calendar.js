@@ -104,7 +104,8 @@ function showCalendar(month, year) {
               cell.onclick = refreshScheduleFromCalendar(date, month, year, cell)
               if ( date === today.getDate() && year === today.getFullYear() && month === today.getMonth() ) {
                   cell.className = "date-picker selected";
-              }
+                  cell.id = "todays-date"
+                }
               row.appendChild(cell);
               date++;
           }

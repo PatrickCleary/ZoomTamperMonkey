@@ -56,6 +56,10 @@ body {
   border-bottom: 2px solid currentColor;
 }
 
+.date-picker#todays-date {
+  background-color: #94b1d6;
+}
+
 #monthAndYear {
   text-align: center;
   margin-top: 0;

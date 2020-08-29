@@ -293,6 +293,13 @@
         return days[date.getDay()] + ' ' + months[date.getMonth()] + ' '  + date.getDate() + ' ' + (1900+date.getYear())
     }
 
+    function formatTime(date) {
+        let hours = date.getHours()
+        hours = ((hours + 11) % 12 + 1);
+
+        return hours + ':' + (date.getMinutes() == 0 ? '00' : date.getMinutes()) + (date.getHours() > 12 ? ' PM' : ' AM')
+    }
+
     function refreshSchedule(date) {
         let schedulerTitle = document.getElementById('scheduler-title')
         schedulerTitle.innerHTML = toStringCustom(date)
@@ -306,16 +313,31 @@
         meetingsList.id = 'meetings-list'
         
         //TODO: change this to be the currently selected date!!!
-        let todaysMeetings = getTodaysMeetings(date)
+        let todaysMeetings = getMeetingsForDate(date)
 
         for( let i =0; i < todaysMeetings.length; i ++) {
 
             let newMeeting = document.createElement('li')
-            newMeeting.innerHTML = todaysMeetings[i].name + ' - ' + todaysMeetings[i].time
-            
+
+            let timeDiv = document.createElement('div')
+            timeDiv.className = 'timeDiv'
+            timeDiv.innerHTML = formatTime(new Date(todaysMeetings[i].date))
+            newMeeting.appendChild(timeDiv)
+
+            let meetingNameDiv = document.createElement('div')
+            meetingNameDiv.className = 'meetingNameDiv'
+
+            let meetingTitle = document.createElement('h3')
+            meetingTitle.innerHTML = todaysMeetings[i].name
+
+            meetingNameDiv.appendChild(meetingTitle)
+
+            newMeeting.appendChild(meetingNameDiv)
+            newMeeting.className = 'list-group-item'
+
             let button = document.createElement('button')
-            button.className = "btn"
-            button.innerHTML = 'Join Meeting'
+            button.className = "btn join-meeting-btn"
+            button.innerHTML = 'Join'
             button.onclick = ()=>joinMeeting(todaysMeetings[i].id)
 
             newMeeting.appendChild(button)

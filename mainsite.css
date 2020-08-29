@@ -23,3 +23,21 @@
 #join-conf h1 {
     margin: 5%;
 }
+
+.list-group-item {
+    display:flex;
+}
+
+.timeDiv {
+    flex:1;
+}
+
+.meetingNameDiv {
+    flex:3;
+    display:flex;
+    justify-content: center;
+}
+
+.join-meeting-btn {
+    flex:1;
+}

@@ -8,7 +8,7 @@ class Meeting {
 
 }
 
-    function getTodaysMeetings(date) {
+    function getMeetingsForDate(date) {
         weeklyMeetingsMap = GM_getValue("weeklyMeetingsMap")
 
         if(weeklyMeetingsMap == undefined) {
@@ -18,7 +18,12 @@ class Meeting {
             }
             GM_setValueAndConvertToString("weeklyMeetingsMap", weeklyMeetingsMap)
         }
-        return GM_getValueAndConvertToMap('weeklyMeetingsMap').get(date.getDay())
+
+        let thisDatesMeetings = GM_getValueAndConvertToMap('weeklyMeetingsMap').get(date.getDay())
+        thisDatesMeetings.sort(function(a, b) {
+            return new Date(a.date) - new Date(b.date)
+        } )
+        return thisDatesMeetings
     }
 
 
@@ -32,13 +37,26 @@ class Meeting {
 
         //repeat every day
         else if(meeting.repeat == 1) {
-
+            let weeklyMeetingsMap = GM_getValueAndConvertToMap('weeklyMeetingsMap') 
+            for( let dayOfWeek =0; dayOfWeek<7; dayOfWeek++) {
+                let meetingsForThatDay = weeklyMeetingsMap.get(dayOfWeek)
+                meetingsForThatDay.push(meeting)
+                weeklyMeetingsMap.set(dayOfWeek, meetingsForThatDay)
+            }
+            GM_setValueAndConvertToString('weeklyMeetingsMap', weeklyMeetingsMap)
         }
 
         //repeat every weekday
         else if(meeting.repeat ==2) {
-
+            let weeklyMeetingsMap = GM_getValueAndConvertToMap('weeklyMeetingsMap') 
+            for( let dayOfWeek =1; dayOfWeek<6; dayOfWeek++) {
+                let meetingsForThatDay = weeklyMeetingsMap.get(dayOfWeek)
+                meetingsForThatDay.push(meeting)
+                weeklyMeetingsMap.set(dayOfWeek, meetingsForThatDay)
         }
+        GM_setValueAndConvertToString('weeklyMeetingsMap', weeklyMeetingsMap)
+
+    }
 
         //repeat 1x a week
         else if(meeting.repeat == 3){
