@@ -7,8 +7,13 @@
 // @match        https://zoom.us/join
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js
 // @require      ./Calendar-master/calendar.js
-// @grant        GM_setValue
+// @resource     calendarCSS ./Calendar-master/calendar.css
+// @resource     mainsiteCSS ./mainsite.css
+// @grant        GM_setValue    
 // @grant        GM_getValue
+// @grant        GM_getResourceText
+// @grant        GM_addStyle
+
 
 // ==/UserScript==
 (function() {
@@ -21,6 +26,11 @@
         addMeetingDivs()
         createCalendar()
         addCalendar();
+        var cssTxt  = GM_getResourceText("calendarCSS");
+        var cssTxt2  = GM_getResourceText("mainsiteCSS");
+        GM_addStyle (cssTxt);
+        GM_addStyle (cssTxt2);
+
 
 
     let meetingsArray = GM_getValue("meetings");
@@ -115,8 +125,12 @@
 
 
 
-    function addMeetingDivs() {
-        let contentContainer = document.getElementById("content_container")
+    function addMeetingDivs() { 
+        let contentContainer = document.getElementById("join-conf")
+
+        let scheduling = document.createElement('div');
+        scheduling.id = "scheduling"
+        contentContainer.appendChild(scheduling)
 
         let addMeeting = document.createElement('div')
         addMeeting.setAttribute("id", "add-meeting")
@@ -126,9 +140,9 @@
         calendar.setAttribute("id","calendarDiv")
 
        
-        contentContainer.appendChild(calendar)
-        contentContainer.appendChild(addMeeting)
-        contentContainer.appendChild(meetings)
+        scheduling.appendChild(calendar)
+        scheduling.appendChild(addMeeting)
+        scheduling.appendChild(meetings)
 
 
     }
