@@ -2,14 +2,16 @@
     display: flex;
     width: 100%;
     margin: 0;
+    padding: 0;
     justify-content: center;
+    max-width: 100%;
 }
 
-#scheduling {
-    width: 50%;
+#calendarDiv {
+    flex: 1;
 }
 
 .mini-layout-body {
 
-    width:50%;
+    flex: 1;
 }

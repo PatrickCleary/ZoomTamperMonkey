@@ -25,7 +25,7 @@
     window.addEventListener('load', () => {
         addMeetingDivs()
         createCalendar()
-        addCalendar();
+        addCalendar()
         var cssTxt  = GM_getResourceText("calendarCSS");
         var cssTxt2  = GM_getResourceText("mainsiteCSS");
         GM_addStyle (cssTxt);
@@ -46,35 +46,33 @@
     addInput()
     })
     
-    
-
     function createCalendar() {
 
 
         let container_Calendar = document.createElement('div')
         container_Calendar.setAttribute('class','container-calendar')
-
+  
         let monthAndYear = document.createElement('h3')
         monthAndYear.setAttribute('id', 'monthAndYear')
-
+  
         container_Calendar.appendChild(monthAndYear)
    
         let button_container_calendar = document.createElement('div')
         button_container_calendar.setAttribute('class','button-container-calendar')
-
+  
         let previousButton = document.createElement('button')
         previousButton.setAttribute('id', 'previous')
         previousButton.innerHTML = "&#8249"
-
+  
         
         let nextButton = document.createElement('button')
         nextButton.setAttribute('id', 'next')
         nextButton.innerHTML = "&#8250"
-
+  
         button_container_calendar.appendChild(previousButton)
         button_container_calendar.appendChild(nextButton)
         container_Calendar.appendChild(button_container_calendar)
-
+  
          
         let table_calendar = document.createElement('table');
         table_calendar.setAttribute('id','calendar')
@@ -84,13 +82,13 @@
         let calendar_body = document.createElement('tbody')
         thead_month.setAttribute('id','thead-month')
         calendar_body.setAttribute('id','calendar-body')
-
-
+  
+  
         table_calendar.appendChild(thead_month) 
         table_calendar.appendChild(calendar_body)
-
+  
         container_Calendar.appendChild(table_calendar)
-
+  
         let footer_container_calendar = document.createElement('div')
         footer_container_calendar.appendChild
         let label = document.createElement('label')
@@ -98,29 +96,30 @@
         label.innerHTML = 'Jump To:'
         let month = document.createElement('select')
         month.setAttribute('id','month')
-
+  
         footer_container_calendar.appendChild(label)
         footer_container_calendar.appendChild(month)
-
+  
         container_Calendar.appendChild(footer_container_calendar)
         let monthsArray = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-
+  
         for( let i =0; i < monthsArray.length; i++ ) {
             let monthOption = document.createElement('option')
+            monthOption.className = 'month-option'
             monthOption.setAttribute('value', i.toString())
             monthOption.innerHTML = monthsArray[i]
             month.appendChild(monthOption)
         }
-
-
+  
+  
         let year = document.createElement('select')
         year.setAttribute('id','year')
         container_Calendar.appendChild(year)
-
+  
         let calendarDiv = document.getElementById('calendarDiv')
         calendarDiv.appendChild(container_Calendar)
-
-
+  
+  
     }
 
 
@@ -128,21 +127,26 @@
     function addMeetingDivs() { 
         let contentContainer = document.getElementById("join-conf")
 
-        let scheduling = document.createElement('div');
-        scheduling.id = "scheduling"
-        contentContainer.appendChild(scheduling)
+        let calendar_div = document.createElement('div');
+        calendar_div.id = "calendarDiv"
+        contentContainer.appendChild(calendar_div)
+
+        let scheduler_div = document.createElement('div')
+        scheduler_div.id = "schedulerDiv"
+        contentContainer.appendChild(scheduler_div)
 
         let addMeeting = document.createElement('div')
-        addMeeting.setAttribute("id", "add-meeting")
+        addMeeting.id = "add-meeting"
         let meetings = document.createElement('div')
         meetings.setAttribute("id", "meetings")
         let calendar = document.createElement('div')
         calendar.setAttribute("id","calendarDiv")
 
        
-        scheduling.appendChild(calendar)
-        scheduling.appendChild(addMeeting)
-        scheduling.appendChild(meetings)
+        calendar_div.appendChild(calendar)
+
+        scheduler_div.appendChild(addMeeting)
+        scheduler_div.appendChild(meetings)
 
 
     }
@@ -173,8 +177,27 @@
         idInput.setAttribute("type", "text")
         idInput.setAttribute("id", "meeting-id")
         idInput.setAttribute("placeholder", "Meeting ID")
-
         meetingDiv.appendChild(idInput)
+
+        let repeatLabel = document.createElement('label')
+        repeatLabel.setAttribute('for', 'repeat-options')
+        repeatLabel.innerHTML = 'Repeat Meeting Every...'
+
+        let repeatSelection = document.createElement('select');
+        let repeatOptions = ['Every Day','Every Weekday', 'Every Week', 'Every Month']
+        repeatSelection.id = 'repeat-options'
+
+        for(let i = 0 ; i < repeatOptions.length; i++) { 
+            let repeatOption = document.createElement('option')
+            repeatOption.className = 'repeat-option'
+            repeatOption.setAttribute('value', i.toString())
+            repeatOption.innerHTML = repeatOptions[i]
+
+            repeatSelection.appendChild(repeatOption)
+        }
+
+        meetingDiv.appendChild(repeatSelection)
+
 }
 
     function addButton(text, onclick, cssObj) {
