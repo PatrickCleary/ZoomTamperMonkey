@@ -135,11 +135,6 @@
         addMeeting.id = "add-meeting"
         let meetings = document.createElement('div')
         meetings.setAttribute("id", "meetings")
-        let calendar = document.createElement('div')
-        calendar.setAttribute("id","calendarDiv")
-
-       
-        calendar_div.appendChild(calendar)
 
         scheduler_div.appendChild(addMeeting)
         scheduler_div.appendChild(meetings)
@@ -225,6 +220,10 @@
             repeatSelection.appendChild(repeatOption)
         }
 
+        let warning = document.createElement('p')
+        warning.id = 'warning'
+        warning.innerHTML = 'Meeting password will be copied to your clipboard when joining the meeting.'
+
         meetingDiv.appendChild(addMeetingTitle)
         meetingDiv.appendChild(input)
         meetingDiv.appendChild(idInput)
@@ -232,6 +231,7 @@
         meetingDiv.appendChild(meetingDatePicker)
         meetingDiv.appendChild(repeatSelection)
         meetingDiv.appendChild(submit)
+        meetingDiv.appendChild(warning)
         
 
 }

@@ -11,7 +11,6 @@ class Meeting {
 }
 
 function formatDate(date) {
-    console.log('this' + date)
     return ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear()
 }
     function getMeetingsForDate(date) {
@@ -97,7 +96,8 @@ function formatDate(date) {
         //repeat 1x a week
         else if(meeting.repeat == 3){
             let weeklyMeetingsMap = GM_getValueAndConvertToMap('weeklyMeetingsMap') 
-            let dayOfTheWeek = meeting.date.getDay()
+            let tempDate =new Date(meeting.date)
+            let dayOfTheWeek = tempDate.getDay()
             let meetingsForThatDay = weeklyMeetingsMap.get(dayOfTheWeek)
             let toDeleteIndex = meetingsForThatDay.findIndex(meetingInArray => meetingInArray.uniqueId == meeting.uniqueId)
                 if(toDeleteIndex > -1) {
@@ -113,7 +113,6 @@ function formatDate(date) {
         //do not repeat
         if(meeting.repeat ==0 || meeting.repeat == 'Repeat Meeting Every...') {
             let dailyMeetingsMap = GM_getValueAndConvertToMap('dailyMeetingsMap')
-            console.log(formatDate(meeting.date))
             let meetingsForThatDay = dailyMeetingsMap.get(formatDate(meeting.date)) || []
             meetingsForThatDay.push(meeting)
             dailyMeetingsMap.set(formatDate(meeting.date), meetingsForThatDay)

@@ -9,13 +9,22 @@
 
 #calendarDiv {
     flex: 1;
+    padding: 2%;
+    border-left: 1px solid #777777;
+    border-right: 1px solid #777777;
+
 }
 
 .mini-layout-body {
     flex: 1;
+    padding:2%;
+    border-right: 1px solid #777777;
 }
 #schedulerDiv {
     flex: 1;
+    padding: 2%;
+    border-left: 1px solid #777777;
+    
 }
 
 #add-meeting {
@@ -78,4 +87,8 @@
 }
 #previous-day {
     height: 50%
+}
+#warning {
+    text-align: center;
+    color: #777777;
 }
