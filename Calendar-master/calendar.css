@@ -28,9 +28,9 @@ body {
   cursor: pointer;
   display: inline-block;
   zoom: 1;
-  background: #00a2b7;
+  background: #0e71eb;
   color: #fff;
-  border: 1px solid #0aa2b5;
+  border: 1px solid #0e71eb;
   border-radius: 4px;
   padding: 5px 10px;
 }
@@ -56,14 +56,8 @@ body {
   border-bottom: 2px solid currentColor;
 }
 
-/* sunday */
-.date-picker:nth-child(1) {
-color: red;
-}
-
-/* friday */
-.date-picker:nth-child(6) {
-color: green;
+.date-picker#todays-date {
+  background-color: #94b1d6;
 }
 
 #monthAndYear {

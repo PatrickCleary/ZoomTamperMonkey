@@ -2,14 +2,80 @@
     display: flex;
     width: 100%;
     margin: 0;
+    padding: 0;
     justify-content: center;
+    max-width: 100%;
 }
 
-#scheduling {
-    width: 50%;
+#calendarDiv {
+    flex: 1;
 }
 
 .mini-layout-body {
+    flex: 1;
+}
+#schedulerDiv {
+    flex: 1;
+}
 
-    width:50%;
+#add-meeting {
+    flex: 1;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+
+}
+
+#join-conf h1 {
+    margin: 5%;
+}
+
+.list-group-item {
+    display:flex;
+    width: 100%;
+    padding: 1%;
+}
+
+.timeDiv {
+    flex:1;
+}
+
+.meetingNameDiv {
+    flex:3;
+    display:flex;
+    justify-content: center;
+}
+
+.join-meeting-btn {
+    flex:1;
+}
+
+.delete-button-hidden {
+    display: none;
+}
+
+#move-day-buttons-div {
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#meetings-list {
+    padding:0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.add-meeting-inputs {
+
+    margin: 1%;
+    
+}
+
+#next-day {
+    height: 50%;
+}
+#previous-day {
+    height: 50%
 }
