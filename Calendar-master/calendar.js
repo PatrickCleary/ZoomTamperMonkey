@@ -118,15 +118,16 @@ function showCalendar(month, year) {
 
 }
 
+
 function refreshScheduleFromCalendar(date, month, year,cell) {
   
-  let refreshDate = new Date(year+'-'+((month+1)%12)+'-'+date)
-
+  let refreshDate = new Date(year+'-'+((month+1)%13)+'-'+date)
+  
   return ()=>{
     refreshSchedule(refreshDate); 
     let selectedDate = document.getElementsByClassName('selected')
     if(selectedDate[0]){
-    selectedDate[0].className = 'date-picker'
+      selectedDate[0].className = 'date-picker'
     }
     cell.className = 'date-picker selected'}
 }

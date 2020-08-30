@@ -18,37 +18,25 @@
 
 
 // ==/UserScript==
+
+
 (function() {
-    
-    
     'use strict';
     window.jQuery310 = $.noConflict(true);
+    let todaysDate = new Date()
+    let globalDate = new Date()
     
     window.addEventListener('load', () => {
 
         addMeetingDivs()
         addSchedule()
         createCalendar()
-        addCalendar(refreshSchedule)
+        addCalendar(changeDate)
         var cssTxt  = GM_getResourceText("calendarCSS");
         var cssTxt2  = GM_getResourceText("mainsiteCSS");
         GM_addStyle (cssTxt);
         GM_addStyle (cssTxt2);
-
-
-    let meetingsArray = GM_getValue("meetings")
- 
-
-    if(meetingsArray == undefined) {
-        meetingsArray = []
-        GM_setValue("meetings", meetingsArray)
-    }
-      for (let index = 0; index< meetingsArray.length; index++) {
-              addButton(meetingsArray[index][0], ()=>joinMeeting(meetingsArray[index][1]))
-
-      }
-     addButton("delete all meetings", ()=>deleteAllMeetings())
-    addInput()
+        addInput()
     })
     
     function createCalendar() {
@@ -156,8 +144,9 @@
 
     }
 
-    function joinMeeting(id) {
-        document.getElementById("join-confno").value = id
+    function joinMeeting(meeting) {
+        copyToClipboard(meeting.password)
+        document.getElementById("join-confno").value = meeting.id
         document.getElementById("btnSubmit").click()
     }
 
@@ -188,6 +177,12 @@
         idInput.setAttribute("id", "meeting-id")
         idInput.setAttribute("placeholder", "Meeting ID")
         idInput.className = 'input-sm form-control'
+
+        let passwordInput = document.createElement('input')
+        passwordInput.type = 'text'
+        passwordInput.id = 'meeting-password'
+        passwordInput.placeholder ='Meeting Password (Optional)'
+        passwordInput.className = 'input-sm form-control'
 
 
 
@@ -230,6 +225,7 @@
         meetingDiv.appendChild(addMeetingTitle)
         meetingDiv.appendChild(input)
         meetingDiv.appendChild(idInput)
+        meetingDiv.appendChild(passwordInput)
         meetingDiv.appendChild(meetingDatePicker)
         meetingDiv.appendChild(repeatSelection)
         meetingDiv.appendChild(submit)
@@ -250,17 +246,42 @@
     function addMeetingButton() {
         let meetingName = document.getElementById("meeting-name").value
         let meetingId = document.getElementById("meeting-id").value
+        let meetingPassword = document.getElementById('meeting-password').value
         let meetingDateTime = document.getElementById('meetingDatePicker').value
         let meetingRepeat = document.getElementById('repeat-options').value
+        let meetingUniqueId = Date.now()
 
-        let newMeeting = new Meeting(meetingName, meetingId, new Date(meetingDateTime), meetingRepeat)
+
+        document.getElementById("meeting-name").value = ''
+        document.getElementById("meeting-id").value = ''
+        document.getElementById('meeting-password').value =''
+        document.getElementById('meetingDatePicker').value =  ''
+        document.getElementById('repeat-options').value = 'Repeat Meeting Every...'
+
+        let newMeeting = new Meeting(meetingName, meetingId, new Date(meetingDateTime), meetingRepeat, meetingPassword, meetingUniqueId)
 
         addMeeting(newMeeting)
-        refreshSchedule(new Date())    
+        changeDate(globalDate)    
 
     }
-    function deleteAllMeetings() {
-        GM_setValue("meetings", []);
+    function editMeetings(button) {
+        let deleteButtons = document.getElementsByClassName('delete-button-hidden')
+
+        if(button.innerHTML === 'Edit Meetings'){
+            
+        for(let j =0; j < deleteButtons.length; j++) {
+            deleteButtons[j].style.display = "block"
+        }
+
+        button.innerHTML = 'Done Editing'
+        } else {
+            for(let j =0; j < deleteButtons.length; j++) {
+                deleteButtons[j].style.display = "none"
+            }
+            button.innerHTML = 'Edit Meetings'
+        }
+
+
     }
 
 
@@ -278,11 +299,31 @@
         schedulerTitle.id = 'scheduler-title'
         schedulerTitle.innerHTML = 'Today\'s Meetings:'
 
-        scheduleDiv.appendChild(schedulerTitle)
+        let moveDayButtonsDiv = document.createElement('div')
+        moveDayButtonsDiv.id = 'move-day-buttons-div'
+        
+        
+        let previousButton = document.createElement('button')
+        previousButton.setAttribute('id', 'previous-day')
+        previousButton.innerHTML = "&#8249"
+        previousButton.className = 'btn btn-primary'
+        previousButton.onclick = ()=>{globalDate.setDate(globalDate.getDate()-1); changeDate(globalDate)}
+        
+        let nextButton = document.createElement('button')
+        nextButton.setAttribute('id', 'next-day')
+        nextButton.innerHTML = "&#8250"
+        nextButton.className = 'btn btn-primary'
+        nextButton.onclick = ()=>{globalDate.setDate(globalDate.getDate()+1); changeDate(globalDate)}
+        
+         moveDayButtonsDiv.appendChild(previousButton)
+         moveDayButtonsDiv.appendChild(schedulerTitle)
+         moveDayButtonsDiv.appendChild(nextButton)
+
+        scheduleDiv.appendChild(moveDayButtonsDiv)
 
         calendarDiv.appendChild(scheduleDiv)
 
-        refreshSchedule(new Date())
+        changeDate(globalDate)
 
 
     }
@@ -297,7 +338,7 @@
         let hours = date.getHours()
         hours = ((hours + 11) % 12 + 1);
 
-        return hours + ':' + (date.getMinutes() == 0 ? '00' : date.getMinutes()) + (date.getHours() > 12 ? ' PM' : ' AM')
+        return hours + ':' + (date.getMinutes() <10 ? '0' + date.getMinutes() : date.getMinutes()) + (date.getHours() > 12 ? ' PM' : ' AM')
     }
 
     function refreshSchedule(date) {
@@ -338,15 +379,54 @@
             let button = document.createElement('button')
             button.className = "btn join-meeting-btn"
             button.innerHTML = 'Join'
-            button.onclick = ()=>joinMeeting(todaysMeetings[i].id)
+            button.onclick = ()=>joinMeeting(todaysMeetings[i])
 
             newMeeting.appendChild(button)
 
+
+            let deleteButton = document.createElement('button')
+            deleteButton.className = "btn delete-button-hidden"
+            deleteButton.innerHTML = 'X'
+            deleteButton.onclick = ()=>{deleteMeeting(todaysMeetings[i]); changeDate(globalDate)}
+
+            newMeeting.appendChild(deleteButton)
+
             meetingsList.appendChild(newMeeting);
         }
+
+        let editMeetingsButton = document.createElement('button')
+        editMeetingsButton.id = 'edit-meetings-button'
+        editMeetingsButton.className = 'btn'
+        editMeetingsButton.innerHTML = 'Edit Meetings'
+        editMeetingsButton.onclick = ()=>editMeetings(editMeetingsButton)
+
+        meetingsList.appendChild(editMeetingsButton)        
         scheduleDiv.appendChild(meetingsList)
-        
     }
+    function copyToClipboard (str) {
+        const el = document.createElement('textarea');
+        el.value = str;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        const selected =
+          document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        if (selected) {
+          document.getSelection().removeAllRanges();
+          document.getSelection().addRange(selected);
+        }
+      };
+
+      function changeDate(date) {
+          globalDate = date
+          refreshSchedule(date)
+
+
+      }
 
 
 
