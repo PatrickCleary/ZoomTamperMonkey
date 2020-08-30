@@ -7,15 +7,63 @@
     max-width: 100%;
 }
 
+#join-conf h1 {
+    font-size: 28px;
+}
+
+#today {
+    position:absolute;
+    bottom: 10%;
+    float: right;
+}
+#monthandyearDiv {
+    
+
+}
+#content {
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+}
+
+#container-calendar {
+    flex: 1;
+    padding: 2%;
+    border: 1px solid #bebebe;
+    border-radius: 5%;
+    margin:1%;
+}
+
 #calendarDiv {
     flex: 1;
+    padding: 2%;
+    border: 1px solid #bebebe;
+    border-radius: 5%;
+    margin:1%;
+
 }
 
 .mini-layout-body {
     flex: 1;
+    padding:2%;
+    border: 1px solid #bebebe;
+    border-radius: 5%;
+    margin:1%;
+
+
+}
+
+#schedule-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 #schedulerDiv {
     flex: 1;
+    padding: 2%;
+    border: 1px solid #bebebe;
+    border-radius: 5%;
+    margin:1%;
 }
 
 #add-meeting {
@@ -51,16 +99,23 @@
 }
 
 .delete-button-hidden {
+    margin-left: 1%;
+    background-color: #ff6b6b;
+    color: #ffffff;
     display: none;
 }
 
 #move-day-buttons-div {
     display:flex;
+    width: 100%;
     align-items: center;
     justify-content: space-between;
 }
 
 #meetings-list {
+    height: 100%;
+    width:100%;
+    overflow-y:auto;
     padding:0;
     display: flex;
     flex-direction: column;
@@ -78,4 +133,14 @@
 }
 #previous-day {
     height: 50%
+}
+#warning {
+    text-align: center;
+    color: #777777;
+}
+
+#edit-meetings-button {
+    margin: 5%;
+    position: absolute;
+    bottom: 0;
 }

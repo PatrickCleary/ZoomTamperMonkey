@@ -1,4 +1,4 @@
-function addCalendar(refreshSchedule) {
+function addCalendar(date, refreshSchedule) {
 
 function generate_year_range(start, end) {
   var years = "";
@@ -7,15 +7,15 @@ function generate_year_range(start, end) {
   }
   return years;
 }
+let today = new Date();
 
-var today = new Date();
-var currentMonth = today.getMonth();
-var currentYear = today.getFullYear();
+var currentMonth = date.getMonth();
+var currentYear = date.getFullYear();
 var selectYear = document.getElementById("year");
 var selectMonth = document.getElementById("month");
 
 
-var createYear = generate_year_range(1970, 2050);
+var createYear = generate_year_range(2020, 2050);
 /** or
 * createYear = generate_year_range( 1970, currentYear );
 */
@@ -37,38 +37,41 @@ dayHeader += "</tr>";
 document.getElementById("thead-month").innerHTML = dayHeader;
 
 monthAndYear = document.getElementById("monthAndYear");
-showCalendar(currentMonth, currentYear);
+showCalendar(date);
 
 
 
 function next() {
-  currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
-  currentMonth = (currentMonth + 1) % 12;
-  showCalendar(currentMonth, currentYear);
+  date.setMonth(date.getMonth()+1)
+  showCalendar(date);
 }
 document.getElementById('next').onclick = ()=>next()
 
 
 function previous() {
-  currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
-  currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
-  showCalendar(currentMonth, currentYear);
+  date.setMonth(date.getMonth()-1)
+  showCalendar(date);
 }
 document.getElementById('previous').onclick = ()=>previous()
 
 
 function jump() {
-  currentYear = parseInt(selectYear.value);
-  currentMonth = parseInt(selectMonth.value);
-  showCalendar(currentMonth, currentYear);
+  date.setYear(parseInt(selectYear.value));
+  date.setMonth(parseInt(selectMonth.value));
+  showCalendar(date);
 }
 document.getElementById('month').onchange = ()=>jump()
 document.getElementById('year').onchange = ()=>jump()
 
 
-function showCalendar(month, year) {
+function showCalendar(date) {
 
-  var firstDay = ( new Date( year, month ) ).getDay();
+  firstDayDate = new Date(date)
+  firstDayDate.setDate(1)
+  var firstDay = firstDayDate.getDay();
+
+  let month = date.getMonth()
+  let year = date.getYear()
 
   tbl = document.getElementById("calendar-body");
 
@@ -76,8 +79,8 @@ function showCalendar(month, year) {
   tbl.innerHTML = "";
 
   
-  monthAndYear.innerHTML = months[month] + " " + year;
-  selectYear.value = year;
+  monthAndYear.innerHTML = months[month] + " " + (1900+year);
+  selectYear.value = (1900+year);
   selectMonth.value = month;
 
   // creating all cells
@@ -102,7 +105,7 @@ function showCalendar(month, year) {
               cell.className = "date-picker";
               cell.innerHTML = "<span>" + date + "</span>";
               cell.onclick = refreshScheduleFromCalendar(date, month, year, cell)
-              if ( date === today.getDate() && year === today.getFullYear() && month === today.getMonth() ) {
+              if ( date === today.getDate() && (1900+year) === today.getFullYear() && month === today.getMonth() ) {
                   cell.className = "date-picker selected";
                   cell.id = "todays-date"
                 }
@@ -118,10 +121,13 @@ function showCalendar(month, year) {
 
 }
 
+function formatDate(date, month, year) {
+  return ((month > 8) ? (month + 1) : ('0' + (month + 1))) + '-' + ((date > 9) ? date : ('0' + date)) + '-' + year
+}
 
 function refreshScheduleFromCalendar(date, month, year,cell) {
   
-  let refreshDate = new Date(year+'-'+((month+1)%13)+'-'+date)
+  let refreshDate = new Date(formatDate(date,month,(1900+year)))
   
   return ()=>{
     refreshSchedule(refreshDate); 
