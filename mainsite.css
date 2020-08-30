@@ -14,9 +14,15 @@
 .mini-layout-body {
     flex: 1;
 }
+#schedulerDiv {
+    flex: 1;
+}
 
 #add-meeting {
     flex: 1;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
 
 }
 
@@ -50,6 +56,7 @@
 
 #move-day-buttons-div {
     display:flex;
+    align-items: center;
     justify-content: space-between;
 }
 
@@ -58,4 +65,17 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.add-meeting-inputs {
+
+    margin: 1%;
+    
+}
+
+#next-day {
+    height: 50%;
+}
+#previous-day {
+    height: 50%
 }

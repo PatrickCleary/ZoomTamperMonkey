@@ -5,6 +5,7 @@
 // @description  Adds functionality to zoom.us/join website
 // @author       Patrick Cleary
 // @match        https://zoom.us/join
+// @match        https://*.zoom.us/join
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js
 // @require      ./Calendar-master/calendar.js
 // @require      ./meetingSchedulingFunctions.js
@@ -27,7 +28,6 @@
     let globalDate = new Date()
     
     window.addEventListener('load', () => {
-
         addMeetingDivs()
         addSchedule()
         createCalendar()
@@ -89,6 +89,7 @@
         label.innerHTML = 'Jump To:'
         let month = document.createElement('select')
         month.setAttribute('id','month')
+        month.className = 'form-control input-sm'
   
         footer_container_calendar.appendChild(label)
         footer_container_calendar.appendChild(month)
@@ -107,6 +108,8 @@
   
         let year = document.createElement('select')
         year.setAttribute('id','year')
+        year.className = 'form-control input-sm'
+
         container_Calendar.appendChild(year)
   
         let calendarDiv = document.getElementById('calendarDiv')
@@ -162,7 +165,7 @@
 
         let submit = document.createElement('button')
         submit.innerHTML = "submit"
-        submit.className = "btn btn-primary"
+        submit.className = "btn btn-primary add-meeting-inputs"
         submit.setAttribute("type", "text")
         submit.onclick = ()=>addMeetingButton()
 
@@ -170,19 +173,19 @@
         input.setAttribute("type", "text")
         input.setAttribute("id", "meeting-name")
         input.setAttribute("placeholder", "Meeting Name")
-        input.className = 'input-sm form-control'
+        input.className = 'input-sm form-control add-meeting-inputs'
 
         let idInput = document.createElement('input')
         idInput.setAttribute("type", "text")
         idInput.setAttribute("id", "meeting-id")
         idInput.setAttribute("placeholder", "Meeting ID")
-        idInput.className = 'input-sm form-control'
+        idInput.className = 'input-sm form-control add-meeting-inputs'
 
         let passwordInput = document.createElement('input')
         passwordInput.type = 'text'
         passwordInput.id = 'meeting-password'
         passwordInput.placeholder ='Meeting Password (Optional)'
-        passwordInput.className = 'input-sm form-control'
+        passwordInput.className = 'input-sm form-control add-meeting-inputs'
 
 
 
@@ -195,12 +198,12 @@
         let repeatSelection = document.createElement('select');
         let repeatOptions = ['One Time Only', 'Every Day','Every Weekday', 'Every Week']
         repeatSelection.id = 'repeat-options'
-        repeatSelection.className = "form-control"
+        repeatSelection.className = "form-control add-meeting-inputs"
         
         let meetingDatePicker = document.createElement('input')
         meetingDatePicker.type = 'datetime-local'
         meetingDatePicker.id = 'meetingDatePicker'
-        meetingDatePicker.className = 'form-control'
+        meetingDatePicker.className = 'form-control add-meeting-inputs'
         
         //TODO: new DAate().toString() not working?
         meetingDatePicker.value = new Date().toString()
@@ -232,16 +235,6 @@
         
 
 }
-
-    function addButton(text, onclick, cssObj) {
-        cssObj = null
-        let button = document.createElement('button'), btnStyle = button.style
-        button.className = "btn"
-        button.innerHTML = text
-        button.onclick = onclick
-
-        document.getElementById("meetings").appendChild(button)
-    }
 
     function addMeetingButton() {
         let meetingName = document.getElementById("meeting-name").value

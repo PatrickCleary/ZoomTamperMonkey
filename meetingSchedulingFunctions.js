@@ -10,18 +10,36 @@ class Meeting {
 
 }
 
+function formatDate(date) {
+    console.log('this' + date)
+    return ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear()
+}
     function getMeetingsForDate(date) {
         weeklyMeetingsMap = GM_getValue("weeklyMeetingsMap")
+        dailyMeetingsMap = GM_getValue("dailyMeetingsMap")
+
+        if(dailyMeetingsMap == undefined) {
+            dailyMeetingsMap = new Map()
+            GM_setValueAndConvertToString("dailyMeetingsMap", dailyMeetingsMap)
+        }
 
         if(weeklyMeetingsMap == undefined) {
             weeklyMeetingsMap = new Map() 
             for( let i = 0; i < 7; i++) {
                 weeklyMeetingsMap.set(i, [])
             }
+
             GM_setValueAndConvertToString("weeklyMeetingsMap", weeklyMeetingsMap)
         }
+        
 
-        let thisDatesMeetings = GM_getValueAndConvertToMap('weeklyMeetingsMap').get(date.getDay())
+        let weeklyMeetings = GM_getValueAndConvertToMap('weeklyMeetingsMap').get(date.getDay())
+        let dailyMeetings = GM_getValueAndConvertToMap('dailyMeetingsMap').get(formatDate(date))
+        if(dailyMeetings == undefined){
+            dailyMeetings = []
+        }
+        let thisDatesMeetings = weeklyMeetings.concat(dailyMeetings)
+
         thisDatesMeetings.sort(function(a, b) {
             dateB = new Date(b.date)
             dateA = new Date(a.date)
@@ -36,7 +54,15 @@ class Meeting {
         
         //do not repeat
         if(meeting.repeat ==0 || meeting.repeat == 'Repeat Meeting Every...') {
-
+            let dailyMeetingsMap = GM_getValueAndConvertToMap('dailyMeetingsMap')
+            let tempDate = new Date(meeting.date)
+            let meetingsForThatDay = dailyMeetingsMap.get(formatDate(tempDate))
+            let toDeleteIndex = meetingsForThatDay.findIndex(meetingInArray => meetingInArray.uniqueId == meeting.uniqueId)
+            if(toDeleteIndex > -1) {
+                meetingsForThatDay.splice(toDeleteIndex, 1)
+            }
+            dailyMeetingsMap.set(formatDate(tempDate), meetingsForThatDay)
+            GM_setValueAndConvertToString('dailyMeetingsMap', dailyMeetingsMap)
         }
 
         //repeat every day
@@ -45,7 +71,6 @@ class Meeting {
             for( let dayOfWeek =0; dayOfWeek<7; dayOfWeek++) {
                 let meetingsForThatDay = weeklyMeetingsMap.get(dayOfWeek)
                 let toDeleteIndex = meetingsForThatDay.findIndex(meetingInArray => meetingInArray.uniqueId == meeting.uniqueId)
-                console.log(toDeleteIndex)
                 if(toDeleteIndex > -1) {
                     meetingsForThatDay.splice(toDeleteIndex, 1)
                 }
@@ -87,7 +112,12 @@ class Meeting {
 
         //do not repeat
         if(meeting.repeat ==0 || meeting.repeat == 'Repeat Meeting Every...') {
-
+            let dailyMeetingsMap = GM_getValueAndConvertToMap('dailyMeetingsMap')
+            console.log(formatDate(meeting.date))
+            let meetingsForThatDay = dailyMeetingsMap.get(formatDate(meeting.date)) || []
+            meetingsForThatDay.push(meeting)
+            dailyMeetingsMap.set(formatDate(meeting.date), meetingsForThatDay)
+            GM_setValueAndConvertToString('dailyMeetingsMap', dailyMeetingsMap)
         }
 
         //repeat every day
