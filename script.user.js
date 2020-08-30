@@ -83,6 +83,7 @@
         container_Calendar.appendChild(table_calendar)
   
         let footer_container_calendar = document.createElement('div')
+        footer_container_calendar.id = 'monthandyearDiv'
         footer_container_calendar.appendChild
         let label = document.createElement('label')
         label.setAttribute('for', 'month')
@@ -109,7 +110,7 @@
         year.setAttribute('id','year')
         year.className = 'form-control input-sm'
 
-        container_Calendar.appendChild(year)
+        footer_container_calendar.appendChild(year)
   
         let mainContent = document.getElementById('join-conf')
         mainContent.appendChild(container_Calendar)

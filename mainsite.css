@@ -11,6 +11,15 @@
     font-size: 28px;
 }
 
+#today {
+    position:absolute;
+    bottom: 10%;
+    float: right;
+}
+#monthandyearDiv {
+    
+
+}
 #content {
     display: flex;
     justify-content: center;

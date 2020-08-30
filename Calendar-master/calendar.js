@@ -15,7 +15,7 @@ var selectYear = document.getElementById("year");
 var selectMonth = document.getElementById("month");
 
 
-var createYear = generate_year_range(1970, 2050);
+var createYear = generate_year_range(2020, 2050);
 /** or
 * createYear = generate_year_range( 1970, currentYear );
 */
@@ -56,8 +56,8 @@ document.getElementById('previous').onclick = ()=>previous()
 
 
 function jump() {
-  currentYear = parseInt(selectYear.value);
-  currentMonth = parseInt(selectMonth.value);
+  date.setYear(parseInt(selectYear.value));
+  date.setMonth(parseInt(selectMonth.value));
   showCalendar(date);
 }
 document.getElementById('month').onchange = ()=>jump()
@@ -66,7 +66,10 @@ document.getElementById('year').onchange = ()=>jump()
 
 function showCalendar(date) {
 
-  var firstDay = date.getDay();
+  firstDayDate = new Date(date)
+  firstDayDate.setDate(1)
+  var firstDay = firstDayDate.getDay();
+
   let month = date.getMonth()
   let year = date.getYear()
 
@@ -77,7 +80,7 @@ function showCalendar(date) {
 
   
   monthAndYear.innerHTML = months[month] + " " + (1900+year);
-  selectYear.value = year;
+  selectYear.value = (1900+year);
   selectMonth.value = month;
 
   // creating all cells
@@ -124,7 +127,7 @@ function formatDate(date, month, year) {
 
 function refreshScheduleFromCalendar(date, month, year,cell) {
   
-  let refreshDate = new Date(formatDate(date,month,year))
+  let refreshDate = new Date(formatDate(date,month,(1900+year)))
   
   return ()=>{
     refreshSchedule(refreshDate); 
