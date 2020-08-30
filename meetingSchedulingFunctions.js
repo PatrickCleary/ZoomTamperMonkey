@@ -43,7 +43,6 @@ function formatDate(date) {
             dateB = new Date(b.date)
             dateA = new Date(a.date)
 
-
             return (dateA.getHours()*100 +dateA.getMinutes()) - (dateB.getHours()*100 + dateB.getMinutes())
         } )
         return thisDatesMeetings

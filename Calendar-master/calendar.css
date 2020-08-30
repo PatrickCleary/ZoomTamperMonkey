@@ -57,7 +57,7 @@ body {
 }
 
 .date-picker#todays-date {
-  background-color: #94b1d6;
+  background-color: #cccccc;
 }
 
 #monthAndYear {
@@ -66,10 +66,10 @@ body {
 }
 
 .button-container-calendar {
-  position: relative;
-  margin-bottom: 1em;
-  overflow: hidden;
-  clear: both;
+    display:flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
 }
 
 #previous {

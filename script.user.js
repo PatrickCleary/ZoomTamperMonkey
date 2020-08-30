@@ -31,7 +31,7 @@
         addMeetingDivs()
         addSchedule()
         createCalendar()
-        addCalendar(changeDate)
+        addCalendar(globalDate, changeDate)
         var cssTxt  = GM_getResourceText("calendarCSS");
         var cssTxt2  = GM_getResourceText("mainsiteCSS");
         GM_addStyle (cssTxt);
@@ -43,12 +43,11 @@
 
 
         let container_Calendar = document.createElement('div')
-        container_Calendar.setAttribute('class','container-calendar')
+        container_Calendar.setAttribute('id','container-calendar')
   
-        let monthAndYear = document.createElement('h3')
+        let monthAndYear = document.createElement('h1')
         monthAndYear.setAttribute('id', 'monthAndYear')
   
-        container_Calendar.appendChild(monthAndYear)
    
         let button_container_calendar = document.createElement('div')
         button_container_calendar.setAttribute('class','button-container-calendar')
@@ -63,6 +62,7 @@
         nextButton.innerHTML = "&#8250"
   
         button_container_calendar.appendChild(previousButton)
+        button_container_calendar.appendChild(monthAndYear)
         button_container_calendar.appendChild(nextButton)
         container_Calendar.appendChild(button_container_calendar)
   
@@ -105,31 +105,27 @@
             month.appendChild(monthOption)
         }
   
-  
         let year = document.createElement('select')
         year.setAttribute('id','year')
         year.className = 'form-control input-sm'
 
         container_Calendar.appendChild(year)
   
-        let calendarDiv = document.getElementById('calendarDiv')
-        calendarDiv.appendChild(container_Calendar)
-  
-  
+        let mainContent = document.getElementById('join-conf')
+        mainContent.appendChild(container_Calendar)
     }
-
-
 
     function addMeetingDivs() { 
         let contentContainer = document.getElementById("join-conf")
 
-        let calendar_div = document.createElement('div');
-        calendar_div.id = "calendarDiv"
-        contentContainer.appendChild(calendar_div)
 
         let scheduler_div = document.createElement('div')
         scheduler_div.id = "schedulerDiv"
         contentContainer.appendChild(scheduler_div)
+        
+        let calendar_div = document.createElement('div');
+        calendar_div.id = "calendarDiv"
+        contentContainer.appendChild(calendar_div)
 
         let addMeeting = document.createElement('div')
         addMeeting.id = "add-meeting"
@@ -138,8 +134,6 @@
 
         scheduler_div.appendChild(addMeeting)
         scheduler_div.appendChild(meetings)
-
-
     }
 
     function joinMeeting(meeting) {
@@ -154,7 +148,7 @@
         let meetingDiv = document.getElementById("add-meeting");
 
         let addMeetingTitle = document.createElement('h1')
-        addMeetingTitle.innerHTML = 'Add Meeting'
+        addMeetingTitle.innerHTML = 'Add a Meeting'
 
         
 
@@ -324,7 +318,7 @@
     function toStringCustom(date) {
         let days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
         let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-        return days[date.getDay()] + ' ' + months[date.getMonth()] + ' '  + date.getDate() + ' ' + (1900+date.getYear())
+        return days[date.getDay()] + ' ' + months[date.getMonth()] + ' '  + date.getDate() + ' ' + (date.getYear()+1900)
     }
 
     function formatTime(date) {
@@ -339,12 +333,15 @@
         schedulerTitle.innerHTML = toStringCustom(date)
         let meetingsList = document.getElementById('meetings-list')
         let scheduleDiv = document.getElementById('schedule-div')
+        let editMeetingsButton = document.getElementById('edit-meetings-button')
         if(meetingsList) {
             scheduleDiv.removeChild(meetingsList)
+            scheduleDiv.removeChild(editMeetingsButton)
         }
         
         meetingsList = document.createElement('ul')
         meetingsList.id = 'meetings-list'
+        meetingsList.className = 'smooth-scroll list-unstyled'
         
         //TODO: change this to be the currently selected date!!!
         let todaysMeetings = getMeetingsForDate(date)
@@ -387,14 +384,14 @@
             meetingsList.appendChild(newMeeting);
         }
 
-        let editMeetingsButton = document.createElement('button')
+        editMeetingsButton = document.createElement('button')
         editMeetingsButton.id = 'edit-meetings-button'
         editMeetingsButton.className = 'btn'
         editMeetingsButton.innerHTML = 'Edit Meetings'
         editMeetingsButton.onclick = ()=>editMeetings(editMeetingsButton)
 
-        meetingsList.appendChild(editMeetingsButton)        
         scheduleDiv.appendChild(meetingsList)
+        scheduleDiv.appendChild(editMeetingsButton)        
     }
     function copyToClipboard (str) {
         const el = document.createElement('textarea');
